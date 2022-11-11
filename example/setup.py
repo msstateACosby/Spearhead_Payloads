@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'bmp_pub = example.bmp_pub:main',
+            'gps_pub = example.gps_pub:main',
         ],
     },
 )
