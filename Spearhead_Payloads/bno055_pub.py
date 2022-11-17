@@ -7,9 +7,11 @@ import adafruit_bno055
 class BNO055_Publisher(Node):
     def __init__(self):
         super().__init__('BNO055_Publisher')
+        self.publisher = self.create_publisher(String, 'bno_data', 10)
         i2c = board.I2C()
         bno = adafruit_bno055.BNO055_I2C(i2c)
         timer_period = 0.01
+        self.timer = self.create_timer(timer_period, self.timer_callback)
     def timer_callback(self):
         msg = String()
         msg.data = f'linear accel: {self.bno.linear_acceleration} gyro: {self.bno.gyro}'

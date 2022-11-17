@@ -6,9 +6,11 @@ import adafruit_bmp3xx
 class BMP388_Publisher(Node):
     def __init__(self):
         super().__init__('BMP388_Publisher')
+        self.publisher = self.create_publisher(String, 'bmp_data', 10)
         i2c = board.I2C()
         bmp = adafruit_bmp3xx.BMP3XX_I2C(i2c)
         timer_period = 0.01
+        self.timer = self.create_timer(timer_period, self.timer_callback)
     def timer_callback(self):
         msg = String()
         msg.data = f'Alt (m): {self.bmp.altitude} Pressure: {self.bmp.pressure}'
