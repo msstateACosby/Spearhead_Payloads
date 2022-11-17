@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'pitot_tube'
+package_name = 'Spearhead_Payloads'
 
 setup(
     name=package_name,
@@ -20,6 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+        	'bmp_pub_example = Spearhead_Payloads.bmp_pub_example:main',
+        	'gps_pub_example = Spearhead_Payloads.gps_pub_example:main',
         ],
     },
 )
