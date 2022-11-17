@@ -20,8 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'bmp388_pub = Spearhead_Payloads.bmp388_pub',
-            'bno055_pub = Spearhead_Payloads.bno055_pub',
+        	'bmp388_pub = Spearhead_Payloads.bmp388_pub:main',
+            'bno055_pub = Spearhead_Payloads.bno055_pub:main',
         	'gps_pub_example = Spearhead_Payloads.gps_pub_example:main',
         ],
     },
