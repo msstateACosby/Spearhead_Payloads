@@ -10,6 +10,7 @@ import serial
 
 class GPS_Publisher(Node):
     def __init__(self):
+        #hey i made some changes because i could
         super().__init__('GPS_Publisher')
         uart = serial.Serial("/dev/tty1",baudrate=115200,timeout=10)
         self.publisher = self.create_publisher(String, 'gps_data', 10)
