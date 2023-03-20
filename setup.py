@@ -23,6 +23,10 @@ setup(
         	'bmp388_pub = Spearhead_Payloads.bmp388_pub:main',
             'bno055_pub = Spearhead_Payloads.bno055_pub:main',
         	'gps_pub_example = Spearhead_Payloads.gps_pub_example:main',
+            'antenna_node = Spearhead_Payloads.antenna_node:main',
+            'black_box_node = Spearhead_Payloads.black_box_node:main',
+            'camera_node = Spearhead_Payloads.camera_node:main',
+            'thermistor_node = Spearhead_Payloads.thermistor:main',
         ],
     },
 )
