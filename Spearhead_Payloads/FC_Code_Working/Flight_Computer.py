@@ -2,6 +2,8 @@
 # Draft version, written by Alexander Ketzle
 import storage
 import time
+import tuple_lib as tup
+import os
 
 ### INIT SECTION: BRING IN ROS2 INPUTS HERE
 # BEFORE THESE CLASSES, ALL SENSORS ARE INITIALIZED AND READY TO SEND DATA
@@ -18,20 +20,22 @@ storage.remount("/",False)
 log_file = open(f"/{time.time()}_flight_data.csv","x")
 log_file.write("timestamp,altitude,linear acceleration,gravity,acceleration\n")
 print(f"{log_file.name} created. Standby for launch")
-arm_state = 1
 zeroTime = time.monotonic()
+initial_alt = BMP388.altitude
 timestamp = 0
+fileDesc = log_file.fileno()
+arm_state = 1
 while arm_state == 1:
-    if mag(BNO055.linear_acceleration) >= 10 and BMP388.altitude >= 5:
-        zeroTime = time.monotonic()
+    if tup.mag(BNO055.linear_acceleration) >= 30 and BMP388.altitude - initial_alt >= 5 and abs(BNO055.linear_acceleration[0]) > (abs(BNO055.linear_acceleration[1]) + abs(BNO055.linear_acceleration[2])):
         timestamp = time.monotonic - zeroTime
-        log_file.write(f"{timestamp},{BMP388.altitude:.2f},{BNO055.linear_acceleration:.2f},{BNO055.gravity:.2f},{BNO055.acceleration:.2f}\n")
+        log_file.write(f"{timestamp},{(BMP388.altitude - initial_alt):.2f},{BNO055.linear_acceleration:.2f},{BNO055.gravity:.2f},{BNO055.acceleration:.2f}\n")
         arm_state = 2
 while arm_state == 2:
     if time.monotonic-zeroTime-timestamp >= 10:
         timestamp = time.monotonic-zeroTime
-        log_file.write(f"{timestamp},{BMP388.altitude:.2f},{BNO055.linear_acceleration:.2f},{BNO055.gravity:.2f},{BNO055.acceleration:.2f}\n")
-    if timestamp >= 1800000: # 30 minutes of flight time. Use this as a failsafe in addition to landing detection methods
+        log_file.write(f"{timestamp},{(BMP388.altitude - initial_alt):.2f},{BNO055.linear_acceleration:.2f},{BNO055.gravity:.2f},{BNO055.acceleration:.2f}\n")
+        os.fsync(fileDesc)
+    if timestamp >= 3600000: # 60 minutes of flight time. Use this as a failsafe in addition to landing detection methods
         arm_state = 3
 while arm_state == 3:
     print(f"Closing {log_file.name}")
