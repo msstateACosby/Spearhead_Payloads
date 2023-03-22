@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from spearhead_msgs.msg import Temperatures,Kalman_Values
+from spearhead_msgs.msg import Temperatures,Flight_Com_Data
 import time
 import datetime
 import csv
@@ -15,30 +15,42 @@ class Black_Box_Node(Node):
             self.temp_callback,
             20
         )
-        self.kalman_callback = self.create_subscription(
-            Kalman_Values,
+        self.flight_com_subscription = self.create_subscription(
+            Flight_Com_Data,
             'kalman_values',
-            self.temp_callback,
+            self.flight_com_data_callback,
             20
         )
+        #
+        timer_period = 10
+        self.save_timer = self.create_timer(timer_period, self.save_data)
+
         self.start_time = time.time()
-        self.datafile = open(datetime.now().strftime("data_%m_%d_%H_%M_%S.csv"), 'w')
-        self.writer = csv.writer(self.datafile)
+        self.temp_file = open(datetime.now().strftime("temp_%m_%d_%H_%M_%S.csv"), 'w')
+        self.temp_writer = csv.writer(self.temp_file)
+        self.flight_com_file = open(datetime.now().strftime("flight_com_%m_%d_%H_%M_%S.csv"), 'w')
+        self.flight_com_writer = csv.writer(self.flight_com_file)
+        self.temperatures = Temperatures()
+        self.flight_com_data = Flight_Com_Data()
         
     def temp_callback(self, msg):
+        self.temperatures = msg
+        #add code to write data to csv
 
-        pass
-
-    def kalman_callback(self, msg):
-
-        pass
-
-    def record_data(self):
-        curr_time = time.time()-self.start_time()
+    def flight_com_data_callback(self, msg):
+        self.flight_com_data = msg
+        #add code to write data to csv
+    
+    def save_data(self):
+        self.tempfile.flush()
+        self.flight_com_file.flush()
     
     def destroy_node(self):
-        self.datafile.close()
+        self.temp_file.close()
+        self.flight_com_file.close()
         super().destroy_node()
+
+
 
 
     
