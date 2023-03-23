@@ -35,7 +35,7 @@ while arm_state == 2:
         timestamp = time.monotonic-zeroTime
         log_file.write(f"{timestamp},{(BMP388.altitude - initial_alt):.2f},{BNO055.linear_acceleration:.2f},{BNO055.gravity:.2f},{BNO055.acceleration:.2f}\n")
         os.fsync(fileDesc)
-    if timestamp >= 3600000: # 60 minutes of flight time. Use this as a failsafe in addition to landing detection methods
+    if timestamp >= 2000000: # 33 minutes of flight time. Use this as a failsafe in addition to landing detection methods
         arm_state = 3
 while arm_state == 3:
     print(f"Closing {log_file.name}")
