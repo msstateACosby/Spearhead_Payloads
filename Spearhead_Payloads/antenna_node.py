@@ -42,6 +42,7 @@ class Antenna_Node(Node):
         
         self.temperatures = Temperatures()
         self.flight_com_data = Flight_Com_Data()
+        self.start_time = time.time()
         
     def temp_callback(self, msg):
         self.temperatures = msg
@@ -52,7 +53,11 @@ class Antenna_Node(Node):
         #add code to write data to csv
         
     def send_data(self):
-        data_string = f'{self.packet_num}'
+        #each packet starts with a packet num between 0 and 9 (one byte string) and the time since program start
+        #because of floats the time could be anywhere from 4 characters (x.xx) to around 9 characters realisticly
+        # we have about 240 numbers left to send
+        curr_time = time.time() - self.time()
+        data_string = f'{self.packet_num} {curr_time:.2f}'
         self.packet_num = (self.packet_num + 1) % 10
         #add code to convert messages into string
         self.rfm9x.send("dd")
