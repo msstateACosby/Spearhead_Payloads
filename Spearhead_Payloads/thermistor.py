@@ -1,4 +1,4 @@
-port rclpy
+import rclpy
 from rclpy.node import Node
 from spearhead_msgs.msg import Thermistors
 import time
