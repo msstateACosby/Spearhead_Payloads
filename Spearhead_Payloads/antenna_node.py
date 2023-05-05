@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from spearhead_msgs.msg import Temperatures, Flight_Com_Data
+#from spearhead_msgs.msg import Temperatures, Flight_Com_Data
 import time
 import board
 import busio
@@ -13,13 +13,14 @@ import adafruit_rfm9x
 class Antenna_Node(Node):
     def __init__(self):
         
-        super().__init__('Black_Box_Node')
+        super().__init__('Antenna_Node')
         spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO = board.MISO)
         cs = digitalio.DigitalInOut(board.D17)
         reset = digitalio.DigitalInOut(board.D22)
         self.rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 915.0)
         
 
+        '''
         self.temp_subscription = self.create_subscription(
             Temperatures,
             'temperatures',
@@ -32,6 +33,7 @@ class Antenna_Node(Node):
             self.flight_com_data_callback,
             20
         )
+        '''
         #
         timer_period = .05
         self.send_data = self.create_timer(timer_period, self.send_data)
@@ -40,8 +42,8 @@ class Antenna_Node(Node):
         self.packet_num = 0
         
         
-        self.temperatures = Temperatures()
-        self.flight_com_data = Flight_Com_Data()
+        #self.temperatures = Temperatures()
+        #self.flight_com_data = Flight_Com_Data()
         self.start_time = time.time()
         
     def temp_callback(self, msg):
@@ -60,7 +62,7 @@ class Antenna_Node(Node):
         data_string = f'{self.packet_num} {curr_time:.2f}'
         self.packet_num = (self.packet_num + 1) % 10
         #add code to convert messages into string
-        self.rfm9x.send("dd")
+        self.rfm9x.send(data_string.encode('utf-8'))
         
 def main(args=None):
     rclpy.init(args=args)

@@ -1,6 +1,6 @@
-import rclpy
+port rclpy
 from rclpy.node import Node
-from spearhead_msgs.msg import Temperatures
+from spearhead_msgs.msg import Thermistors
 import time
 import board
 import busio
@@ -21,11 +21,9 @@ class Thermistor_Node(Node):
         super().__init__('Thermistor_Node')
         i2c = busio.I2C(board.SCL, board.SDA)
         ads_0 = ADS.ADS1115(i2c, address = 0x48)
-        ads_1 = ADS.ADS1115(i2c, address = 0x49)
-        ads_2 = ADS.ADS1115(i2c, address = 0x4A)
-        ads_3 = ADS.ADS1115(i2c, address = 0x4B)
-
-        self.publisher = self.create_publisher(Temperatures, 'temperatures', 20)
+        ads_1 = ADS.ADS1115(i2c, address = 0x4A)
+        
+        self.publisher = self.create_publisher(Thermistors, 'thermistors', 20)
         timer_period = .05
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
@@ -38,25 +36,20 @@ class Thermistor_Node(Node):
             AnalogIn(ads_1, ADS.P0),
             AnalogIn(ads_1, ADS.P1),
             AnalogIn(ads_1, ADS.P2),
-            AnalogIn(ads_1, ADS.P3),
-
-            AnalogIn(ads_2, ADS.P0),
-            AnalogIn(ads_2, ADS.P1),
-            AnalogIn(ads_2, ADS.P2),
-            AnalogIn(ads_2, ADS.P3),
-
-            AnalogIn(ads_3, ADS.P0),
-            AnalogIn(ads_3, ADS.P1),
-            AnalogIn(ads_3, ADS.P2),
-            AnalogIn(ads_3, ADS.P3),
         ]
+
+        self.internal = AnalogIn(ads_1, ADS.P3)
         
 
     def timer_callback(self):
         temps = []
         for reading in self.inputs:
-            temps.append(voltage_to_temp(reading.voltage,1_000,5.0))
-        
+            temps.append(voltage_to_temp(reading.voltage,1_000,3.3))
+        msg = Thermistors()
+        msg.time = time.time()
+        msg.surface_temps = temps
+        msg.internal_temp = voltage_to_temp(self.internal.voltage,1_000,3.3)
+        self.publisher.publish(msg)
     
 
 

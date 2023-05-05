@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from spearhead_msgs.msg import Temperatures,Flight_Com_Data
+#from spearhead_msgs.msg import Temperatures,Flight_Com_Data
 import time
 import datetime
 import csv
