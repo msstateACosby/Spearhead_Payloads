@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'Spearhead_Payloads'
+package_name = 'spearhead_code'
 
 setup(
     name=package_name,
@@ -20,14 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'bmp387_pub = Spearhead_Payloads.bmp388_pub:main',
-            	'bno055_pub = Spearhead_Payloads.bno055_pub:main',
-        	#'gps_pub_example = Spearhead_Payloads.gps_pub_example:main',
-            	#'antenna_node = Spearhead_Payloads.antenna_node:main',
-            	#'black_box_node = Spearhead_Payloads.black_box_node:main',
-            	#'camera_node = Spearhead_Payloads.camera_node:main',
-            	'thermistor_node = Spearhead_Payloads.thermistor:main',
-                'flight_node = Spearhead_Payloads.flight_computer:main',
+            	'thermistor_node = spearhead_code.thermistor:main',
+                'flight_node = spearhead_code.flight_computer:main',
         ],
     },
 )

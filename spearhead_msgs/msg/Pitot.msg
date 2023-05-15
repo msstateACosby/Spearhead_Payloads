@@ -1,0 +1,4 @@
+int64 epoch_time
+float64 dynamic_pressure
+float64 static_pressure
+float64 airspeed
