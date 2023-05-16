@@ -30,6 +30,7 @@ class Black_Box_Node(Node):
         self.temp_writer = csv.writer(self.temp_file)
         self.flight_com_file = open(datetime.now().strftime("flight_com_%m_%d_%H_%M_%S.csv"), 'w')
         self.flight_com_writer = csv.writer(self.flight_com_file)
+        self.flight_com_writer.writerow(['Time','BMP Altitude','GPS Altitude','Internal Pressure','Acceleration X','Acceleration Y','Acceleration Z','Linear Accel X','Linear Accel Y','Linear Accel Z','Gravity X','Gravity Y','Gravity Z','Angular Vel X','Angular Vel Y','Angular Vel Z','Quaternion X','Quaternion Y','Quaternion Z','Quaternion i'])
         self.temperatures = Temperatures()
         self.flight_com_data = Flight_Com_Data()
         
@@ -39,6 +40,7 @@ class Black_Box_Node(Node):
 
     def flight_com_data_callback(self, msg):
         self.flight_com_data = msg
+        self.flight_com_writer.writerow([msg.time,msg.bmp_altitude,msg.gps_altitude,msg.internal_pressure]+msg.acceleration+msg.linear_acceleration+msg.gravity+msg.angular_velocity+msg.quaternion_orientaion)
         #add code to write data to csv
     
     def save_data(self):
