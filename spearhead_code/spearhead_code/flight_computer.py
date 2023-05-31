@@ -7,16 +7,8 @@ import busio
 import adafruit_bno055 as BNO
 import adafruit_bmp3xx as BMP
 import adafruit_gps as GPS
-#from adafruit_ads1x15.analog_in import AnalogIn
 
 import math
-
-"""
-def voltage_to_temp(voltage, static_r, ref_v):
-    resistance = (static_r * ref_v)/ (ref_v-voltage)
-    temperature = 1.0/25.0 + 1.0/3380.0*math.log(resistance/10_000.0)
-    return temperature
-"""
 
 class Flight_Node(Node):
     def __init__(self):
@@ -29,7 +21,6 @@ class Flight_Node(Node):
         self.gps = GPS.GPS(uart, debug=False)
         self.gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
         self.gps.send_command(b"PMTK220,100")
-        #ads_1 = ADS.ADS1115(i2c, address = 0x4A)
         
         self.publisher = self.create_publisher(FlightComputer, 'FlightComputer', 20)
         timer_period = .05
@@ -51,9 +42,6 @@ class Flight_Node(Node):
         
 
     def timer_callback(self):
-        #temps = []
-        #for reading in self.inputs:
-        #    temps.append(voltage_to_temp(reading.voltage,1_000,3.3))
         self.gps.update()
         msg = FlightComputer()
         msg.time = time.time()
@@ -65,9 +53,6 @@ class Flight_Node(Node):
         msg.bmp_altitude = self.bmp.altitude
         msg.internal_pressure = self.bmp.pressure
         msg.gps_altitude = self.gps.altitude_m
-        #temp = self.bmp.temperature
-        #print(temp)
-        #msg.internal_temp = voltage_to_temp(self.internal.voltage,1_000,3.3)
         self.publisher.publish(msg)
     
 
