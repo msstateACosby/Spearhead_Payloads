@@ -13,10 +13,10 @@ PITOT_ADDRESS = 0x28
 
 class Pitot_Node(Node):
     def __init__(self):
-        super().__init('Pitot_Node')
+        super().__init__('Pitot_Node')
         self.bus = SMBus(1)
         self.publisher = self.create_publisher(Pitot, 'Pitot', 20)
-        timer_period = 20
+        timer_period = .05
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
         self.flight_com_subscription = self.create_subscription(
@@ -25,7 +25,7 @@ class Pitot_Node(Node):
             self.flight_com_data_callback,
             20
         )
-        self.current_static_pressure = -1
+        self.current_static_pressure = -1.0
 
     def timer_callback(self):
         self.bus.write_i2c_block_data(PITOT_ADDRESS, 0xAA, [0x00, 0x00])

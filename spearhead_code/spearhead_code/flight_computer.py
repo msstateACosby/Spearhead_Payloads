@@ -7,6 +7,7 @@ import busio
 import adafruit_bno055 as BNO
 import adafruit_bmp3xx as BMP
 import adafruit_gps as GPS
+import serial
 
 import math
 
@@ -16,8 +17,8 @@ class Flight_Node(Node):
         super().__init__('Flight_Node')
         i2c = busio.I2C(board.SCL, board.SDA)
         self.bno = BNO.BNO055_I2C(i2c, address=0x29)
-        self.bmp = BMP.BMP_3XX_I2C(i2c)
-        uart = busio.UART(board.TX, board.RX, baudrate=9600, timeout=10)
+        self.bmp = BMP.BMP3XX_I2C(i2c)
+        uart = serial.Serial("/dev/ttyS0",baudrate=9600,timeout=1)
         # uart = serial.Serial("/dev/tty1",baudrate=115200,timeout=10) #might have to use this line for UART instead of the above line
         self.gps = GPS.GPS(uart, debug=False)
         self.gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
@@ -39,7 +40,10 @@ class Flight_Node(Node):
         msg.angular_velocity = list(self.bno.gyro)
         msg.bmp_altitude = self.bmp.altitude
         msg.internal_pressure = self.bmp.pressure
-        msg.gps_altitude = self.gps.altitude_m
+        if (self.gps.has_fix):
+            msg.gps_altitude = self.gps.altitude_m
+        else:
+            msg.gps_altitude = -1.0
         self.publisher.publish(msg)
 
 

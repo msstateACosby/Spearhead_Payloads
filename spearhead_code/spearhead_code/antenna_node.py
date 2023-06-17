@@ -14,8 +14,8 @@ class Antenna_Node(Node):
 
         super().__init__('Antenna_Node')
         spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-        cs = digitalio.DigitalInOut(board.D17)
-        reset = digitalio.DigitalInOut(board.D22)
+        cs = digitalio.DigitalInOut(board.D4)
+        reset = digitalio.DigitalInOut(board.D7)
         self.rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 915.0)
 
         self.temp_subscription = self.create_subscription(

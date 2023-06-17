@@ -3,25 +3,23 @@ from rclpy.node import Node
 from datetime import datetime
 import cv2
 
-BLACK_BOX_PATH = '/media/usb'
+BLACK_BOX_PATH = '~/usb/'
 
 
 class Camera_Node(Node):
     def __init__(self):
         super().__init__('Camera_Node')
-        self.cap = cv2.VideoCapture('/dev/video0', cv2.CAP_V4L)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.cap = cv2.VideoCapture(-1, cv2.CAP_V4L)
 
-        fourcc = cv2.VideoWriter_fourcc(*'H264')
+        fourcc = cv2.VideoWriter_fourcc(*'X264')
         self.out = cv2.VideoWriter(BLACK_BOX_PATH + datetime.now().strftime(
-            "flight_com_%m_%d_%H_%M_%S.h264"), fourcc, 20, (1280, 720))
+            "flight_com_%m_%d_%H_%M_%S.mkv"), fourcc, 20, (1280, 720))
         timer_period = 1.0/60.0
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self):
         ret, frame = self.cap.read()
-        self.out.write(cv2.cvtColor(frame, cv2.COLOR_BGR2HSV))
+        self.out.write(frame)
 
     def destroy_node(self):
         self.cap.release()

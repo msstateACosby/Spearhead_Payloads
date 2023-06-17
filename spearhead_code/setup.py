@@ -22,7 +22,10 @@ setup(
         'console_scripts': [
             	'thermistor_node = spearhead_code.thermistor:main',
                 'flight_node = spearhead_code.flight_computer:main',
-                'ptiot_node = spearhead_code.pitot_node:main',
+                'pitot_node = spearhead_code.pitot_node:main',
+                'antenna_node = spearhead_code.antenna_node:main',
+                'black_box_node = spearhead_code.black_box_node:main',
+                'camera_node = spearhead_code.camera_node:main',
         ],
     },
 )

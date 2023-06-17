@@ -1,2 +1,3 @@
 float64 time
-float64 pressure
+float64 dynamic_pressure
+float64 static_pressure

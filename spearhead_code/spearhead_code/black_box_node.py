@@ -6,7 +6,7 @@ from datetime import datetime
 import csv
 
 # get actual path
-BLACK_BOX_PATH = '/media/usb/'
+BLACK_BOX_PATH = '/home/ubuntu/usb/'
 
 
 class Black_Box_Node(Node):
@@ -36,32 +36,30 @@ class Black_Box_Node(Node):
         timer_period = 10
         self.save_timer = self.create_timer(timer_period, self.save_data)
 
-        self.therm_writer = open(BLACK_BOX_PATH + datetime.now().strftime(
+        self.therm_file = open(BLACK_BOX_PATH + datetime.now().strftime(
             "temp_%m_%d_%H_%M_%S.csv"), 'w')
-        self.therm_writer = csv.writer(self.temp_file)
+        self.therm_writer = csv.writer(self.therm_file)
         self.therm_writer.writerow(
-            ['Time'] + ['Outside Temp ' + x for x in range(1, 8)] + ['Internal_Temp'])
+            ['Time'] + ['Outside Temp ' + 'x' for x in range(1, 8)] + ['Internal_Temp'])
         self.flight_com_file = open(BLACK_BOX_PATH+datetime.now().strftime(
             "flight_com_%m_%d_%H_%M_%S.csv"), 'w')
         self.flight_com_writer = csv.writer(self.flight_com_file)
         self.flight_com_writer.writerow(['Time', 'BMP Altitude', 'GPS Altitude', 'Internal Pressure', 'Acceleration X', 'Acceleration Y', 'Acceleration Z', 'Linear Accel X', 'Linear Accel Y',
                                         'Linear Accel Z', 'Gravity X', 'Gravity Y', 'Gravity Z', 'Angular Vel X', 'Angular Vel Y', 'Angular Vel Z', 'Quaternion X', 'Quaternion Y', 'Quaternion Z', 'Quaternion i'])
 
-        self.pitot_file = self.therm_writer = open(BLACK_BOX_PATH+datetime.now().strftime(
+        self.pitot_file = open(BLACK_BOX_PATH+datetime.now().strftime(
             "pitot_%m_%d_%H_%M_%S.csv"), 'w')
         self.pitot_writer = csv.writer(self.pitot_file)
         self.pitot_writer.writerow(
             ['Time', 'Static Pressure', 'Dyanmic Pressure'])
 
     def temp_callback(self, msg):
-        self.therm_writer.writerow(
-            [msg.time] + msg.surface_temps + [msg.internal_temp])
+        self.therm_writer.writerow([msg.time] + list(msg.surface_temps) + [msg.internal_temp])
         # add code to write data to csv
 
     def flight_com_callback(self, msg):
 
-        self.flight_com_writer.writerow([msg.time, msg.bmp_altitude, msg.gps_altitude, msg.internal_pressure] +
-                                        msg.acceleration+msg.linear_acceleration+msg.gravity+msg.angular_velocity+msg.quaternion_orientaion)
+        self.flight_com_writer.writerow([msg.time, msg.bmp_altitude, msg.gps_altitude, msg.internal_pressure] + list( msg.acceleration) +list(msg.linear_acceleration) +list (msg.gravity) + list(msg.angular_velocity) +list(msg.quaternion_orientation))
         # add code to write data to csv
 
     def pitot_callback(self, msg):
